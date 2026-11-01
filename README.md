@@ -7,6 +7,12 @@ HT32 front-panel LCD. The label is drawn by the application; the supplied
 
 ![MeridianX LCD preview](logo-preview.png)
 
+## Rust edition
+
+A native Rust implementation is available in [rust/](rust/README.md), with its own
+installer and service. It supports the same USB protocol and stop-to-black
+behavior; keep only one implementation running.
+
 ## Supported setup
 
 - Linux with systemd; installation commands target Debian/Ubuntu.

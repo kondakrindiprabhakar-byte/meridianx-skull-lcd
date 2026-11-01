@@ -57,3 +57,17 @@ per-transfer timeout, before USB release. Cleanup remains guaranteed if the
 black upload fails. Service explicitly uses SIGTERM and a 30-second stop timeout.
 Added a black-frame/timeout regression test. This does not implement permanent
 blackout of standby-powered firmware or force-kill handling.
+
+## Rust edition 0.1.0
+
+The native port lives under `rust/`. Eight tests cover byte-level compatibility
+with the Python full/partial packets, reconstruction, black frames, CLI/color
+validation, stop interruption, and text/clock rendering. Uses safe Rust APIs,
+libusb via rusb interrupt writes, auto-detach scoped to interface 1, and a finite
+cleanup deadline. Zero-length USB timeouts are avoided. No network listener.
+The dependency lockfile is committed; libusb is built from vendored crate source.
+Rust runtime is not dependent on Python. Installer disables Python's service
+before enabling Rust's; rollback steps are in the Rust README. No changes are
+made to firmware or stored-logo memory. Rust USB operation, new installer, and
+signal/shutdown behavior still require physical acceptance testing. Packet parity
+does not prove every controller revision handles the protocol identically.

@@ -1,0 +1,19 @@
+[Unit]
+Description=MeridianX Skullsaints LCD (Rust)
+Conflicts=skull-lcd.service
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ExecStart=/opt/skull-lcd-rust/skull-lcd --image /opt/skull-lcd-rust/logo.jpg --background white --label MeridianX
+Restart=on-failure
+RestartSec=5
+KillSignal=SIGTERM
+TimeoutStopSec=30
+
+[Install]
+WantedBy=multi-user.target
