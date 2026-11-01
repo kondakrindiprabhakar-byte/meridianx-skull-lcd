@@ -1,0 +1,3 @@
+# Debian/Ubuntu packages are recommended for the systemd service.
+Pillow>=9.2
+pyusb>=1.2

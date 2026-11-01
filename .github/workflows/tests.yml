@@ -1,0 +1,17 @@
+name: Tests
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install distro dependencies
+        run: sudo apt-get update && sudo apt-get install -y python3-pil python3-usb libusb-1.0-0 fonts-dejavu-core
+      - name: Test rendering and protocol
+        run: /usr/bin/python3 -m unittest -v
+      - name: Validate installer and service
+        run: |
+          sh -n install.sh
+          systemd-analyze verify skull-lcd.service

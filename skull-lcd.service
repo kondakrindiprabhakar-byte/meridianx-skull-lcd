@@ -1,0 +1,18 @@
+[Unit]
+Description=Custom Skullsaints LCD content
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ExecStart=/usr/bin/python3 -u /opt/skull-lcd/skull_lcd.py --image /opt/skull-lcd/logo.jpg --background white --label MeridianX
+Restart=on-failure
+RestartSec=5
+KillSignal=SIGTERM
+TimeoutStopSec=30
+
+[Install]
+WantedBy=multi-user.target
