@@ -27,4 +27,11 @@ jobs:
       - run: cargo fmt --manifest-path rust/Cargo.toml --check
       - run: cargo test --manifest-path rust/Cargo.toml --locked
       - run: cargo clippy --manifest-path rust/Cargo.toml --locked --all-targets -- -D warnings
-      - run: sh -n rust/install.sh && systemd-analyze verify rust/skull-lcd-rust.service
+      - name: Build and stage executable for service validation
+        run: |
+          cargo build --manifest-path rust/Cargo.toml --locked
+          sudo install -D -m 0755 rust/target/debug/skull-lcd /opt/skull-lcd-rust/skull-lcd
+      - name: Validate installer and service
+        run: |
+          sh -n rust/install.sh
+          systemd-analyze verify rust/skull-lcd-rust.service
