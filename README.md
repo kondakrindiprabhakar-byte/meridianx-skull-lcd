@@ -1,4 +1,4 @@
-# MeridianX / Roblogix LCD — version 1.0.1
+# MeridianX / Roblogix LCD — version 1.0.2
 
 Display the supplied Roblogix logo with “MeridianX” beside it on a Skullsaints
 HT32 front-panel LCD. The label is drawn by the application; the supplied
@@ -196,3 +196,20 @@ The panel can later restore its own warning/logo while powered by standby USB.
 Therefore remaining black indefinitely after shutdown cannot be guaranteed with
 the currently verified protocol. SIGKILL (`kill -9`), a USB disconnect, or sudden
 power loss cannot run cleanup. Physical shutdown/stop behavior needs host testing.
+
+## Reduced brightness
+
+Use `--brightness 35` for dimmer content (integer percentage, 0–100).
+100 keeps the original colors; 0 paints black. This scales RGB pixel values
+for the entire composed frame, including background, logo, label and clock.
+It does not reduce the physical backlight or guarantee lower power consumption.
+No hardware-backlight command is documented in the verified HT32 protocol.
+See https://github.com/tjaworski/AceMagic-S1-LED-TFT-Linux for protocol details.
+The default is 60%. Use `--brightness 100` to restore full intensity.
+
+For startup, use `sudo systemctl edit --full SERVICE`, append
+`--brightness 35` to the existing `ExecStart` command, then run
+`sudo systemctl daemon-reload` and `sudo systemctl restart SERVICE`.
+Replace SERVICE with `skull-lcd` for Python or `skull-lcd-rust` for Rust.
+An installer upgrade replaces the service defaults; reapply customization after
+upgrading. Software dimming does not affect a warning drawn by panel firmware.

@@ -39,6 +39,9 @@ struct Args {
     label_color: Rgb<u8>,
     #[arg(long, default_value = "black", value_parser = color)]
     background: Rgb<u8>,
+    /// Software content brightness percentage; does not adjust the backlight.
+    #[arg(long, default_value_t = 60, value_parser = clap::value_parser!(u8).range(0..=100))]
+    brightness: u8,
     #[arg(long, default_value = "white", value_parser = color)]
     color: Rgb<u8>,
     #[arg(
@@ -265,7 +268,16 @@ fn render(a: &Args) -> Result<RgbImage> {
             a.color,
         );
     }
+    dim(&mut im, a.brightness);
     Ok(im)
+}
+
+fn dim(im: &mut RgbImage, percent: u8) {
+    for pixel in im.pixels_mut() {
+        for channel in &mut pixel.0 {
+            *channel = ((*channel as u16 * percent as u16 + 50) / 100) as u8;
+        }
+    }
 }
 
 struct Display {
@@ -504,6 +516,15 @@ mod tests {
         assert_eq!(packets[0][2], 0xf0);
         assert_eq!(packets[26][2], 0xf2);
         assert!(packets.iter().all(|p| p[8..].iter().all(|b| *b == 0)));
+    }
+    #[test]
+    fn brightness_endpoints_and_rounding() {
+        for (percent, expected) in [(100, [255, 128, 1]), (50, [128, 64, 1]), (0, [0, 0, 0])] {
+            let mut im = RgbImage::from_pixel(1, 1, Rgb([255, 128, 1]));
+            dim(&mut im, percent);
+            assert_eq!(im.get_pixel(0, 0), &Rgb(expected));
+        }
+        assert!(Args::try_parse_from(["skull-lcd", "--blank", "--brightness", "101"]).is_err());
     }
     #[test]
     fn color_validation() {

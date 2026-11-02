@@ -9,7 +9,7 @@ import threading
 import time
 from pathlib import Path
 
-VERSION = "1.0.1"
+VERSION = "1.0.2"
 SIZE = (320, 170)
 
 def packet(header, payload=b''):
@@ -80,7 +80,12 @@ def render(args):
         font = ImageFont.truetype(args.font or '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', 16)
         draw.rectangle((0, 145, 319, 169), fill=args.background)
         draw.text((160, 157), datetime.now().strftime('%Y-%m-%d  %H:%M:%S'), anchor='mm', font=font, fill=args.color)
-    return image
+    return dim(image, args.brightness)
+
+def dim(image, brightness):
+    # Integer lookup table matches the Rust renderer exactly (round half up).
+    table = [(value * brightness + 50) // 100 for value in range(256)]
+    return image.point(table * 3)
 
 class Display:
     def __init__(self):
@@ -150,6 +155,7 @@ def main():
     content.add_argument('--blank', action='store_true', help='Replace logo with black (backlight stays on)')
     p.add_argument('--label', help='Brand name beside the logo; requires --image')
     p.add_argument('--label-color', default='#092681')
+    p.add_argument('--brightness', type=int, default=60, choices=range(101), metavar='0..100', help='Software content brightness percentage; backlight is unchanged')
     p.add_argument('--background', default='black')
     p.add_argument('--color', default='white')
     p.add_argument('--font', help='Path to a TrueType font')

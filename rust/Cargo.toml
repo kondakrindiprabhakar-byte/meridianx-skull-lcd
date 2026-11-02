@@ -1,6 +1,6 @@
 [package]
 name = "skull-lcd"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 description = "Linux HT32 Skullsaints LCD controller with MeridianX branding"
 

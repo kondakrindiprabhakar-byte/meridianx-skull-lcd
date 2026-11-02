@@ -58,7 +58,7 @@ class ProtocolTests(unittest.TestCase):
         args = argparse.Namespace(image=Path(__file__).with_name('logo.jpg'),
                                   text=None, blank=False, background='white',
                                   font=None, color='black', label='MeridianX',
-                                  label_color='#092681', clock=False, size=40)
+                                  label_color='#092681', clock=False, size=40, brightness=100)
         im = lcd.render(args)
         self.assertEqual(im.size, lcd.SIZE)
         self.assertLess(min(im.crop((174, 60, 315, 110)).tobytes()), 100)
@@ -77,6 +77,12 @@ class ProtocolTests(unittest.TestCase):
             self.assertEqual(data[8:], bytes(4096))
         self.assertEqual(sent[0][0][2], 0xF0)
         self.assertEqual(sent[-1][0][2], 0xF2)
+
+    def test_brightness_endpoints_and_rounding(self):
+        image = Image.new('RGB', (1, 1), (255, 128, 1))
+        self.assertEqual(lcd.dim(image, 100).getpixel((0, 0)), (255, 128, 1))
+        self.assertEqual(lcd.dim(image, 50).getpixel((0, 0)), (128, 64, 1))
+        self.assertEqual(lcd.dim(image, 0).getpixel((0, 0)), (0, 0, 0))
 
     def test_cleanup_continues_after_disconnect(self):
         calls = []

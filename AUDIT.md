@@ -71,3 +71,11 @@ before enabling Rust's; rollback steps are in the Rust README. No changes are
 made to firmware or stored-logo memory. Rust USB operation, new installer, and
 signal/shutdown behavior still require physical acceptance testing. Packet parity
 does not prove every controller revision handles the protocol identically.
+
+## Brightness update — Python 1.0.2 / Rust 0.1.1
+
+Added integer software brightness 0–100 with default 60 as requested. Both
+renderers use the same integer scaling/rounding after all compositing, so
+re-rendering the clock does not compound dimming. Added endpoint/rounding tests
+and Rust CLI range tests. No guessed USB commands or backlight control added.
+Python has eight tests; Rust has nine tests. Physical dimming needs host testing.

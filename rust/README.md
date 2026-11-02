@@ -1,4 +1,4 @@
-# Skullsaints LCD — Rust edition 0.1.0
+# Skullsaints LCD — Rust edition 0.1.1
 
 Native Linux port of the Python application in this repository. Supports the
 HT32 USB LCD `04d9:fd01`, interface 1 / interrupt OUT `0x02`, 320×170 RGB565.
@@ -120,3 +120,20 @@ sudo rm -r /opt/skull-lcd-rust
 Backups remain for manual review. See the parent README for artwork ownership,
 protocol sources, and Python installation. Rust dependencies keep their own
 licenses; this port does not bundle the upstream HT32 panel project's source.
+
+## Reduced brightness
+
+Use `--brightness 35` for dimmer content (integer percentage, 0–100).
+100 keeps the original colors; 0 paints black. This scales RGB pixel values
+for the entire composed frame, including background, logo, label and clock.
+It does not reduce the physical backlight or guarantee lower power consumption.
+No hardware-backlight command is documented in the verified HT32 protocol.
+See https://github.com/tjaworski/AceMagic-S1-LED-TFT-Linux for protocol details.
+The default is 60%. Use `--brightness 100` to restore full intensity.
+
+For startup, use `sudo systemctl edit --full SERVICE`, append
+`--brightness 35` to the existing `ExecStart` command, then run
+`sudo systemctl daemon-reload` and `sudo systemctl restart SERVICE`.
+Replace SERVICE with `skull-lcd` for Python or `skull-lcd-rust` for Rust.
+An installer upgrade replaces the service defaults; reapply customization after
+upgrading. Software dimming does not affect a warning drawn by panel firmware.
